@@ -1,0 +1,28 @@
+﻿@using Staffing.Shared
+
+@if (Employee is not null)
+{
+    <div class="card" style="width: 18rem;">
+        @if (Employee.Picture is not null)
+        {
+            <img src="pictures/@Employee.Picture" class="card-img-top" alt="...">
+        }
+        else
+        {
+            <img src="https://picsum.photos/600?random=@Index" class="card-img-top" alt="...">
+        }
+        <div class="card-body">
+            <h5 class="card-title">@Employee.FirstName @Employee.LastName</h5>
+            <p class="card-text">Joined Capgemini on: @Employee.JoinedOn.ToString("dd-MM-yyyy")</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Employee? Employee { get; set; }
+
+    [Parameter]
+    public int? Index { get; set; }
+}

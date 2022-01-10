@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Staffing.Shared;
 
 namespace StaffingService.Controllers;
 
@@ -8,10 +9,10 @@ public class EmployeesController : ControllerBase
 {
     private static readonly Employee[] Employees = new Employee[]
     {
-        new("Roel", "van de Grint", "16-01-1985"),
-        new("Donald", "Hessing", "16-01-1985"),
-        new("Gerben", "De Vries", "16-01-1985"),
-        new("Carl", "In 't Veld", "16-01-1985")
+        new("Roel", "van de Grint", new DateTime(2017,9,1), "IMG_0609.JPG"),
+        new("Donald", "Hessing", new DateTime(1900, 5, 4), null),
+        new("Gerben", "de Vries", new DateTime(2021, 6, 6), null),
+        new("Carl", "in 't Veld", new DateTime(2014, 7, 3), null)
     };
 
     private readonly ILogger<EmployeesController> _logger;
@@ -22,10 +23,9 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Employee> Get()  {
+    public IEnumerable<Employee> Get()
+    {
         Thread.Sleep(1000);
         return Employees;
     }
-
-    public record Employee(string firstName, string lastName, string DateOfBirth);
 }

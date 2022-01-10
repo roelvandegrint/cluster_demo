@@ -4,13 +4,11 @@
 @inject StaffingService staffingService
 @inject ILogger<Index> logger
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Hello!</h1>
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+<h2>The 3 most recent new-joiners are:</h2>>
 
 @if (employees is null)
 {
@@ -18,22 +16,36 @@ Welcome to your new app.
 }
 else
 {
-    <ul>
-        @foreach (var employee in employees)
+    <div class="row">
+        @for (var i = 0; i < 3; i++)
         {
-            <li>@employee.firstName @employee.lastName</li>
+            var index = i;
+            <div class="col-md-4">
+                <EmployeeCard Employee="@employees[i]" Index="@index"></EmployeeCard>
+            </div>
         }
-    </ul>
+    </div>
 }
 
+<p>Notifications area goes here</p>
 @code {
     private bool employeesLoading;
-    private IEnumerable<Employee>? employees;
+    private Employee[]? employees;
 
     protected override async Task OnInitializedAsync()
     {
         employeesLoading = true;
-        employees = await staffingService.GetForecastAsync();
+        var employees = await staffingService.GetForecastAsync();
+        this.employees = employees.OrderByDescending(e => e.JoinedOn).ToArray();
+        @* var employees = new Employee[] {
+            new("Roel", "van de Grint", new DateTime(2017,9,1), "IMG_0609.JPG"),
+            new("Donald", "Hessing", new DateTime(1900, 5, 4), null),
+            new("Gerben", "de Vries", new DateTime(2021, 6, 6), null),
+            new("Carl", "in 't Veld", new DateTime(2014, 7, 3), null)
+            };
+            this.employees = employees.OrderByDescending(e => e.JoinedOn).ToArray(); *@
+
+
         employeesLoading = false;
     }
 }
