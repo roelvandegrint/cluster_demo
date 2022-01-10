@@ -1,0 +1,3 @@
+@port = 64235
+
+GET http://localhost:{{port}}/v1.0/invoke/staffingsvc/method/employees HTTP/1.1

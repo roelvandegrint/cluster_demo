@@ -1,0 +1,39 @@
+﻿@page "/"
+@using Frontend.Data
+@using Staffing.Shared
+@inject StaffingService staffingService
+@inject ILogger<Index> logger
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+@if (employees is null)
+{
+    <p>Loading employees...</p>
+}
+else
+{
+    <ul>
+        @foreach (var employee in employees)
+        {
+            <li>@employee.firstName @employee.lastName</li>
+        }
+    </ul>
+}
+
+@code {
+    private bool employeesLoading;
+    private IEnumerable<Employee>? employees;
+
+    protected override async Task OnInitializedAsync()
+    {
+        employeesLoading = true;
+        employees = await staffingService.GetForecastAsync();
+        employeesLoading = false;
+    }
+}
