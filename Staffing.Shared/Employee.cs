@@ -3,8 +3,8 @@
 namespace Staffing.Shared;
 
 public record Employee
-{
-    public string Id { get; init; } = Guid.NewGuid().ToString();
+{    
+    public string? Id { get; set; }
     
     [Required]
     public string? FirstName { get; init; }
