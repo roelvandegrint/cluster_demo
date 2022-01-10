@@ -72,7 +72,7 @@ module frontend 'container-app.bicep' = {
           }
           {
             name: 'redisPassword'
-            value: ''
+            value: 'p@ss$12E45'
           }
         ]
       }
