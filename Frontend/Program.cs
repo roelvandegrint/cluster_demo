@@ -1,17 +1,28 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Frontend.Data;
+using Microsoft.AspNetCore.ResponseCompression;
+using FrontEnd.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddControllers().AddDapr();
+builder.Services.AddDaprClient();
 builder.Services.AddSingleton<StaffingService>();
 
-builder.Services.AddDaprClient();
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
+
 
 var app = builder.Build();
+
+app.UseResponseCompression();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -27,7 +38,15 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
+app.UseCloudEvents();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapSubscribeHandler();
+    endpoints.MapControllers();
+    endpoints.MapBlazorHub();
+    endpoints.MapHub<NotificationsHub>("/notificationshub");
+    endpoints.MapFallbackToPage("/_Host");
+});
 
 app.Run();

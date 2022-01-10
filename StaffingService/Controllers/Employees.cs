@@ -1,3 +1,4 @@
+using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
 using Staffing.Shared;
 
@@ -7,7 +8,7 @@ namespace StaffingService.Controllers;
 [Route("[controller]")]
 public class EmployeesController : ControllerBase
 {
-    private static readonly Employee[] Employees = new Employee[]
+    private static readonly List<Employee> Employees = new List<Employee>
     {
         new("Roel", "van de Grint", new DateTime(2017,9,1), "IMG_0609.JPG"),
         new("Donald", "Hessing", new DateTime(1900, 5, 4), null),
@@ -16,10 +17,12 @@ public class EmployeesController : ControllerBase
     };
 
     private readonly ILogger<EmployeesController> _logger;
+    private readonly DaprClient _dapr;
 
-    public EmployeesController(ILogger<EmployeesController> logger)
+    public EmployeesController(ILogger<EmployeesController> logger, DaprClient dapr)
     {
         _logger = logger;
+        _dapr = dapr;
     }
 
     [HttpGet]
@@ -27,5 +30,12 @@ public class EmployeesController : ControllerBase
     {
         Thread.Sleep(1000);
         return Employees;
+    }
+
+    [HttpPost]
+    public void AddEmployee(Employee employee)
+    {
+        Employees.Add(employee);
+        _dapr.PublishEventAsync<Employee>("events", "new_employees", employee);
     }
 }

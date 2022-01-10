@@ -1,15 +1,18 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
 @using Frontend.Data
 @using Staffing.Shared
 @inject StaffingService staffingService
 @inject ILogger<Index> logger
+@inject NavigationManager NavigationManager
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello!</h1>
 
-<h2>The 3 most recent new-joiners are:</h2>>
+<p>Our cluster currently consists of @employeeCount people.</p>
 
+<h2>The 3 most recent new-joiners are:</h2>
 @if (employees is null)
 {
     <p>Loading employees...</p>
@@ -29,14 +32,20 @@ else
 
 <p>Notifications area goes here</p>
 @code {
+    private HubConnection? hubConnection;
+
+    private int? employeeCount;
     private bool employeesLoading;
     private Employee[]? employees;
 
     protected override async Task OnInitializedAsync()
     {
+        await SetupSignalRAsync();
+
         employeesLoading = true;
         var employees = await staffingService.GetForecastAsync();
         this.employees = employees.OrderByDescending(e => e.JoinedOn).ToArray();
+        this.employeeCount = this.employees.Length;
         @* var employees = new Employee[] {
             new("Roel", "van de Grint", new DateTime(2017,9,1), "IMG_0609.JPG"),
             new("Donald", "Hessing", new DateTime(1900, 5, 4), null),
@@ -47,5 +56,21 @@ else
 
 
         employeesLoading = false;
+    }
+
+    private async Task SetupSignalRAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+        .WithUrl(NavigationManager.ToAbsoluteUri("/notificationshub"))
+        @* .WithUrl("https://cont-ap-frontend.greenisland-b2639c56.northeurope.azurecontainerapps.io/notificationshub") *@
+        .Build();
+
+        hubConnection.On<Employee>("EmployeeJoined", employee =>
+        {
+            employeeCount++;
+            StateHasChanged();
+        });
+
+        await hubConnection.StartAsync();
     }
 }
