@@ -78,8 +78,10 @@ jobs:
                 environmentName=contenv-ip-ap \
                 frontendImage=${{ env.REGISTRY}}/${{ needs.build.outputs.containerImage-frontend }} \
                 frontendPort=80 \
+                frontendAppId=frontend \
                 staffingsvcImage=${{ env.REGISTRY}}/${{ needs.build.outputs.containerImage-staffingsvc }} \
                 staffingsvcPort=80 \
+                staffingsvcAppId=staffingsvc
                 registry=${{ env.REGISTRY }} \
                 registryUsername=${{ secrets.REGISTRY_USERNAME }} \
                 registryPassword=${{ secrets.REGISTRY_PASSWORD }} \                
