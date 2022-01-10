@@ -81,6 +81,13 @@ else
             StateHasChanged();
         });
 
-        await hubConnection.StartAsync();
+        try
+        {
+            await hubConnection.StartAsync();
+        }
+        catch(Exception ex) 
+        {
+            logger.LogError(ex, "Connecting to the SignalR Hub failed");
+        }
     }
 }
