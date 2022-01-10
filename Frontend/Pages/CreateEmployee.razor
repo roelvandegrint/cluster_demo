@@ -1,0 +1,36 @@
+@page "/employees/new"
+@using Frontend.Data
+@using Staffing.Shared
+@inject ILogger<CreateEmployee> Logger
+@inject StaffingService staffingService
+@inject NavigationManager navigationManager
+
+<EditForm Model="@newEmployee" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div>
+        <label for="firstName">First name</label>
+        <InputText id="firstName" @bind-Value="newEmployee.FirstName" />
+    </div>
+    <div>
+        <label for="lastName">Last name</label>
+        <InputText id="lastName" @bind-Value="newEmployee.LastName" />
+    </div>
+    <button type="submit">Submit</button>
+</EditForm>
+
+@code {
+    private Random rnd = new();
+    private Employee newEmployee = new();
+
+    private async Task HandleValidSubmit()
+    {
+        Logger.LogInformation("HandleValidSubmit called");
+
+        // Process the valid form
+        newEmployee.JoinedOn = new DateTime(rnd.Next(2015, 2022), rnd.Next(1, 13), rnd.Next(1, 29));
+
+        await staffingService.CreateAsync(newEmployee);
+        navigationManager.NavigateTo("/");
+    }
+}

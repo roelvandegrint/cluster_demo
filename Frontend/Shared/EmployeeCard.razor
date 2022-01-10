@@ -25,7 +25,7 @@
 
     public int? Index;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         var rnd = new Random();
         Index = rnd.Next(1, 99);

@@ -37,6 +37,8 @@ else
     }
 }
 
+<CreateEmployee></CreateEmployee>
+
 @if (newEmployee is not null)
 {
     <p>Someone joined the company!</p>
@@ -46,8 +48,7 @@ else
 <p>Notifications area goes here</p>
 @code {
     private HubConnection? hubConnection;
-
-    private bool employeesLoading;
+    private IDisposable? listener;
     private List<Employee>? employees;
     private Employee? newEmployee;
 
@@ -55,32 +56,25 @@ else
     {
         await SetupSignalRAsync();
 
-        employeesLoading = true;
-        var employees = await staffingService.GetForecastAsync();
+        var employees = await staffingService.GetAllEmployeesAsync();
         this.employees = employees.OrderByDescending(e => e.JoinedOn).ToList();
-        employeesLoading = false;
-
-        @* var employees = new Employee[] {
-            new("Roel", "van de Grint", new DateTime(2017,9,1), "IMG_0609.JPG"),
-            new("Donald", "Hessing", new DateTime(1900, 5, 4), null),
-            new("Gerben", "de Vries", new DateTime(2021, 6, 6), null),
-            new("Carl", "in 't Veld", new DateTime(2014, 7, 3), null)
-            };
-            this.employees = employees.OrderByDescending(e => e.JoinedOn).ToArray(); *@
     }
 
     private async Task SetupSignalRAsync()
     {
         hubConnection = new HubConnectionBuilder()
-        .WithUrl(NavigationManager.ToAbsoluteUri("/notificationshub"))
-    @* .WithUrl("https://cont-frontend.jollybush-3d99f517.northeurope.azurecontainerapps.io/notificationshub") *@
-    .Build();
+        @* .WithUrl(NavigationManager.ToAbsoluteUri("/notificationshub")) *@
+        .WithUrl("https://cont-frontend.jollybush-3d99f517.northeurope.azurecontainerapps.io/notificationshub")
+        .Build();
 
-        hubConnection.On<Employee>("EmployeeJoined", employee =>
+        listener = hubConnection.On<Employee>("EmployeeJoined", employee =>
         {
             newEmployee = employee;
-            employees!.Add(employee);
-            employees = employees.OrderByDescending(e => e.JoinedOn).ToList();
+            if (!employees!.Any(e => e.Id == employee.Id))
+            {
+                employees!.Add(employee);
+                employees = employees.OrderByDescending(e => e.JoinedOn).ToList();
+            }
             StateHasChanged();
         });
 

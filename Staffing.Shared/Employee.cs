@@ -7,13 +7,13 @@ public record Employee
     public string? Id { get; set; }
     
     [Required]
-    public string? FirstName { get; init; }
+    public string? FirstName { get; set; }
     
     [Required]    
-    public string? LastName { get; init; }
+    public string? LastName { get; set; }
     
     [Required]
-    public DateTime JoinedOn { get; init; }
+    public DateTime JoinedOn { get; set; }
     
-    public string? Picture { get; init; }
+    public string? Picture { get; set; }
 }

@@ -20,10 +20,6 @@ public class EmployeesController : ControllerBase
     [HttpGet]
     public async Task<IEnumerable<Employee>> GetAsync()
     {
-        var httpClient = new HttpClient();
-        httpClient.GetFromJsonAsync<IEnumerable<Employee>>(
-            "http://localhost:62735/v1.0/"
-        )
         var employees = await _dapr.GetStateAsync<IEnumerable<Employee>>("staffing", "employees");
         if (employees is null) return new Employee[] { };
         return employees;
