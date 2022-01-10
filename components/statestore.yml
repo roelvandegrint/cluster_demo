@@ -7,6 +7,6 @@ spec:
   version: v1
   metadata:
   - name: redisHost
-    value: localhost:6379
+    value: 20.105.17.191:6379
   - name: redisPassword
     value: ""
