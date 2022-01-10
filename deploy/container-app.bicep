@@ -7,7 +7,7 @@ param daprAppId string
 param isExternalIngress bool = false
 param containerRegistry string
 param containerRegistryUsername string
-
+param daprComponents array = []
 param environmentVars array = []
 
 @secure()
@@ -56,6 +56,7 @@ resource containerApp 'Microsoft.Web/containerApps@2021-03-01' = {
         enabled: true
         appPort: containerPort
         appId: daprAppId
+        components: daprComponents
       }
     }
   }
