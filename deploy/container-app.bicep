@@ -51,7 +51,6 @@ resource containerApp 'Microsoft.Web/containerApps@2021-03-01' = {
       ]
       scale: {
         minReplicas: 1
-        maxReplicas: 9
       }
       dapr: {
         enabled: true
