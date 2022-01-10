@@ -8,14 +8,6 @@ namespace StaffingService.Controllers;
 [Route("[controller]")]
 public class EmployeesController : ControllerBase
 {
-    private static readonly List<Employee> Employees = new List<Employee>
-    {
-        new("Roel", "van de Grint", new DateTime(2017,9,1), "IMG_0609.JPG"),
-        new("Donald", "Hessing", new DateTime(1900, 5, 4), null),
-        new("Gerben", "de Vries", new DateTime(2021, 6, 6), null),
-        new("Carl", "in 't Veld", new DateTime(2014, 7, 3), null)
-    };
-
     private readonly ILogger<EmployeesController> _logger;
     private readonly DaprClient _dapr;
 
@@ -26,16 +18,53 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Employee> Get()
+    public async Task<IEnumerable<Employee>> GetAsync()
     {
-        Thread.Sleep(1000);
-        return Employees;
+        var employees = await _dapr.GetStateAsync<IEnumerable<Employee>>("staffing", "employees");
+        if (employees is null) return new Employee[] { };
+        return employees;
+    }
+
+    [HttpGet("{id}")]
+    public async Task<Employee?> GetByIdAsync(string id)
+    {
+        var employees = await _dapr.GetStateAsync<IEnumerable<Employee>>("staffing", "employees");
+        return employees?.FirstOrDefault(e => e.Id == id);
     }
 
     [HttpPost]
-    public void AddEmployee(Employee employee)
+    public async Task<Employee> AddEmployeeAsync(Employee employee)
     {
-        Employees.Add(employee);
-        _dapr.PublishEventAsync<Employee>("events", "new_employees", employee);
+        var employees = await _dapr.GetStateAsync<IEnumerable<Employee>>("staffing", "employees");
+        if (employees is null)
+        {
+            await _dapr.SaveStateAsync("staffing", "employees", new Employee[] { employee });
+        }
+        else
+        {
+            var newState = employees.ToList();
+            newState.Add(employee);
+            await _dapr.SaveStateAsync("staffing", "employees", newState);
+        }
+
+        await _dapr.PublishEventAsync<Employee>("events", "new_employees", employee);
+        return employee;
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteEmployeeASync(string id)
+    {
+        var employees = await _dapr.GetStateAsync<IEnumerable<Employee>>("staffing", "employees");
+
+        if (employees is null) return Ok();
+
+        var employeeToGo = employees.FirstOrDefault(e => e.Id == id);
+        if (employeeToGo is null) return Ok();
+
+        var newState = employees.Where(e => e.Id != id);
+        await _dapr.SaveStateAsync("staffing", "employees", newState);
+
+        await _dapr.PublishEventAsync<Employee>("events", "employee_deleted", employeeToGo);
+        return Ok();
     }
 }

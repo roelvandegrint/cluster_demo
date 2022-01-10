@@ -10,33 +10,46 @@
 
 <h1>Hello!</h1>
 
-<p>Our cluster currently consists of @employeeCount people.</p>
-
-<h2>The 3 most recent new-joiners are:</h2>
 @if (employees is null)
 {
-    <p>Loading employees...</p>
+    <p>Loading...</p>
 }
 else
 {
-    <div class="row">
-        @for (var i = 0; i < 3; i++)
-        {
-            var index = i;
-            <div class="col-md-4">
-                <EmployeeCard Employee="@employees[i]" Index="@index"></EmployeeCard>
-            </div>
-        }
-    </div>
+    <p>Our cluster currently consists of @employees.Count() people.</p>
+
+    @if (!employees.Any())
+    {
+        <h2>There's no one here yet</h2>
+    }
+    else
+    {
+        <h2>The most recent new-joiners are:</h2>
+
+        <div class="row">
+            @foreach (var employee in employees.Take(3))
+            {
+                <div class="col-md-4">
+                    <EmployeeCard Employee="@employee"></EmployeeCard>
+                </div>
+            }
+        </div>
+    }
+}
+
+@if (newEmployee is not null)
+{
+    <p>Someone joined the company!</p>
+    <EmployeeCard Employee="@newEmployee"></EmployeeCard>
 }
 
 <p>Notifications area goes here</p>
 @code {
     private HubConnection? hubConnection;
 
-    private int? employeeCount;
     private bool employeesLoading;
-    private Employee[]? employees;
+    private List<Employee>? employees;
+    private Employee? newEmployee;
 
     protected override async Task OnInitializedAsync()
     {
@@ -44,8 +57,9 @@ else
 
         employeesLoading = true;
         var employees = await staffingService.GetForecastAsync();
-        this.employees = employees.OrderByDescending(e => e.JoinedOn).ToArray();
-        this.employeeCount = this.employees.Length;
+        this.employees = employees.OrderByDescending(e => e.JoinedOn).ToList();
+        employeesLoading = false;
+
         @* var employees = new Employee[] {
             new("Roel", "van de Grint", new DateTime(2017,9,1), "IMG_0609.JPG"),
             new("Donald", "Hessing", new DateTime(1900, 5, 4), null),
@@ -53,21 +67,20 @@ else
             new("Carl", "in 't Veld", new DateTime(2014, 7, 3), null)
             };
             this.employees = employees.OrderByDescending(e => e.JoinedOn).ToArray(); *@
-
-
-        employeesLoading = false;
     }
 
     private async Task SetupSignalRAsync()
     {
         hubConnection = new HubConnectionBuilder()
         .WithUrl(NavigationManager.ToAbsoluteUri("/notificationshub"))
-        @* .WithUrl("https://cont-ap-frontend.greenisland-b2639c56.northeurope.azurecontainerapps.io/notificationshub") *@
-        .Build();
+    @* .WithUrl("https://cont-frontend.jollybush-3d99f517.northeurope.azurecontainerapps.io/notificationshub") *@
+    .Build();
 
         hubConnection.On<Employee>("EmployeeJoined", employee =>
         {
-            employeeCount++;
+            newEmployee = employee;
+            employees!.Add(employee);
+            employees = employees.OrderByDescending(e => e.JoinedOn).ToList();
             StateHasChanged();
         });
 

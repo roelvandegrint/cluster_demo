@@ -1,3 +1,19 @@
-﻿namespace Staffing.Shared;
+﻿using System.ComponentModel.DataAnnotations;
 
-public record Employee(string FirstName, string LastName, DateTime JoinedOn, string? Picture);
+namespace Staffing.Shared;
+
+public record Employee
+{
+    public string Id { get; init; } = Guid.NewGuid().ToString();
+    
+    [Required]
+    public string? FirstName { get; init; }
+    
+    [Required]    
+    public string? LastName { get; init; }
+    
+    [Required]
+    public DateTime JoinedOn { get; init; }
+    
+    public string? Picture { get; init; }
+}

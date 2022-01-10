@@ -23,6 +23,11 @@
     [Parameter]
     public Employee? Employee { get; set; }
 
-    [Parameter]
-    public int? Index { get; set; }
+    public int? Index;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var rnd = new Random();
+        Index = rnd.Next(1, 99);
+    }
 }
