@@ -77,6 +77,23 @@ module frontend 'container-app.bicep' = {
         value: 'Development'
       }
     ]
+    daprComponents: [
+      {
+        name: 'staffing'
+        type: 'state.redis'
+        version: 'v1'
+        metadata: [
+          {
+            name: 'redisHost'
+            value: '20.105.17.191:6379'
+          }
+          {
+            name: 'redisPassword'
+            value: 'p@ss$12E45'
+          }
+        ]
+      }
+    ]
   }
 }
 
