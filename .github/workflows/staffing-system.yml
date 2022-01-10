@@ -44,8 +44,7 @@ jobs:
       #https://github.com/docker/build-push-action
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
-        with:
-          context: ${{ matrix.services.directory }}
+        with:          
           tags: ${{ env.REGISTRY }}/${{ matrix.services.imageName }}:${{ github.sha }}
           push: true
 
