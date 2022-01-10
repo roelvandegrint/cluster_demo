@@ -81,7 +81,7 @@ jobs:
                 frontendAppId=frontend \
                 staffingsvcImage=${{ env.REGISTRY}}/${{ needs.build.outputs.containerImage-staffingsvc }} \
                 staffingsvcPort=80 \
-                staffingsvcAppId=staffingsvc
+                staffingsvcAppId=staffingsvc \
                 registry=${{ env.REGISTRY }} \
                 registryUsername=${{ secrets.REGISTRY_USERNAME }} \
-                registryPassword=${{ secrets.REGISTRY_PASSWORD }} \                
+                registryPassword=${{ secrets.REGISTRY_PASSWORD }} \
