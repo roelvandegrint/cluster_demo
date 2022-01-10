@@ -22,7 +22,7 @@ public class MessagingController : ControllerBase
         _hubContext = hubContext;
     }
 
-    // [Topic("events", "new_employees")]
+    [Topic("events", "new_employees")]
     [HttpPost]
     public async Task<IActionResult> NewJoiner(Employee employee)
     {

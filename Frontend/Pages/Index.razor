@@ -66,9 +66,9 @@ else
         logger.LogInformation($"Calling hub on: {queryUri}");
 
         hubConnection = new HubConnectionBuilder()
-        .WithUrl(NavigationManager.ToAbsoluteUri("/notificationshub"))
-    @* .WithUrl("https://cont-frontend.jollybush-3d99f517.northeurope.azurecontainerapps.io/notificationshub") *@
-    .Build();
+        @* .WithUrl(NavigationManager.ToAbsoluteUri("/notificationshub")) *@
+        .WithUrl("https://cont-frontend.jollybush-3d99f517.northeurope.azurecontainerapps.io/notificationshub")
+        .Build();
 
         listener = hubConnection.On<Employee>("EmployeeJoined", employee =>
         {
