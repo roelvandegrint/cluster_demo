@@ -12,6 +12,7 @@ on:
 
 env:
   REGISTRY: roelvandegrint.azurecr.io
+  RESOURCE_GROUP: rg-cluster-demo
 
 jobs:
   build:
@@ -69,8 +70,8 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az group create -g rg-ip-ap -l northeurope
-            az deployment group create -g rg-ip-ap -f ./deploy/main.bicep \
+            az group create -g ${{ RESOURCE_GROUP }} -l northeurope
+            az deployment group create -g ${{ RESOURCE_GROUP }} -f ./deploy/main.bicep \
              -p \
                 environmentName=contenv-ip-ap \
                 frontendImage=${{ env.REGISTRY}}/${{ needs.build.outputs.containerImage-frontend }} \
