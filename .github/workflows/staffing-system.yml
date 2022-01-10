@@ -20,8 +20,8 @@ jobs:
     strategy:
       matrix:
         services: [ 
-          { 'imageName': 'frontend', 'directory': './Frontend' },
-          { 'imageName': 'staffingsvc', 'directory': './StaffingService' }
+          { 'imageName': 'frontend', 'directory': '.' },
+          { 'imageName': 'staffingsvc', 'directory': '.' }
         ]
     outputs:
       containerImage-frontend: ${{ steps.image-tag.outputs.image-frontend }}
