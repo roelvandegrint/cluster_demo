@@ -37,7 +37,7 @@ var eventsPubsubRedisDaprComponent = {
 module staffingsvc 'container-app.bicep' = {
   name: 'staffing-svc'
   params: {
-    containerAppName: 'cont-staffingsvc'
+    containerAppName: 'cont-staffingsvc-1'
     location: location
     environmentId: environment.outputs.environmentId
     containerImage: staffingsvcImage
@@ -65,7 +65,6 @@ module staffingsvc 'container-app.bicep' = {
           }
         ]
       }
-      eventsPubsubRedisDaprComponent
     ]
   }
 }
@@ -73,6 +72,9 @@ module staffingsvc 'container-app.bicep' = {
 // Container-1-Node (container-app.bicep)
 module frontend 'container-app.bicep' = {
   name: 'frontend'
+  dependsOn: [
+    staffingsvc
+  ]
   params: {
     containerAppName: 'cont-frontend'
     location: location
@@ -90,8 +92,6 @@ module frontend 'container-app.bicep' = {
         value: 'Development'
       }
     ]
-    daprComponents: [
-      eventsPubsubRedisDaprComponent
-    ]
+    daprComponents: []
   }
 }

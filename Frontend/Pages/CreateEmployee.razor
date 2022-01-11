@@ -31,6 +31,6 @@
         newEmployee.JoinedOn = new DateTime(rnd.Next(2015, 2022), rnd.Next(1, 13), rnd.Next(1, 29));
 
         await staffingService.CreateAsync(newEmployee);
-        navigationManager.NavigateTo("/");
+        @* navigationManager.NavigateTo("/"); *@
     }
 }

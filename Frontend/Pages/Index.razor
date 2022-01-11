@@ -5,6 +5,7 @@
 @inject StaffingService staffingService
 @inject ILogger<Index> logger
 @inject NavigationManager NavigationManager
+@implements IDisposable
 
 <PageTitle>Home</PageTitle>
 
@@ -26,12 +27,12 @@ else
     {
         <h2>The most recent new-joiners are:</h2>
 
-       <div class="row">
+        <div class="row">
             @foreach (var employee in employees.Take(3))
             {
                 <div class="col-md-4">
-                <EmployeeCard Employee="@employee"></EmployeeCard>
-            </div>
+                    <EmployeeCard Employee="@employee"></EmployeeCard>
+                </div>
             }
         </div>
     }
@@ -52,7 +53,7 @@ else
     private List<Employee>? employees;
     private Employee? newEmployee;
 
-   protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         await SetupSignalRAsync();
 
@@ -74,11 +75,12 @@ else
 
         hubConnection = new HubConnectionBuilder()
         .WithUrl(NavigationManager.ToAbsoluteUri("/notificationshub"))
-        @* .WithUrl("https://cont-frontend.jollybush-3d99f517.northeurope.azurecontainerapps.io/notificationshub") *@
-        .Build();
+    @* .WithUrl("https://cont-frontend.jollybush-3d99f517.northeurope.azurecontainerapps.io/notificationshub") *@
+    .Build();
 
         listener = hubConnection.On<Employee>("EmployeeJoined", employee =>
         {
+            logger.LogInformation($"{employee.FirstName} {employee.LastName} joined!");
             newEmployee = employee;
             if (!employees!.Any(e => e.Id == employee.Id))
             {
@@ -96,5 +98,19 @@ else
         {
             logger.LogError(ex, "Connecting to the SignalR Hub failed");
         }
+    }
+
+    public void Dispose()
+    {
+        logger.LogInformation("Dispose called");
+        @* if (listener is not null)
+        {
+            listener.Dispose();
+        }
+
+        if (hubConnection is not null)
+        {
+            await hubConnection.StopAsync();
+        } *@
     }
 }
