@@ -11,8 +11,6 @@
 
 <h1>Hello!</h1>
 
-<h1>Deleting @deleting</h1>
-
 @if (employees is null)
 {
     <p>Loading...</p>
@@ -52,14 +50,13 @@ else
     private HubConnection? hubConnection;
     private IDisposable? listener;
     private List<Employee>? employees;
-    private bool deleting = false;
     private Employee? newEmployee;
 
     private async Task DeleteEmployee(string id)
     {
         logger.LogInformation("Deleting employee");
         await staffingService.DeleteEmployeeAsync(id);
-        var newEmployees = employees!.Where(e=>e.Id != id);
+        var newEmployees = employees!.Where(e => e.Id != id);
         employees = newEmployees!.OrderByDescending(e => e.JoinedOn).ToList();
         logger.LogInformation("Employee deleted");
         StateHasChanged();
@@ -76,6 +73,7 @@ else
         }
         catch
         {
+            logger.LogError("Getting staff didn't work");
             employees = new List<Employee>();
         }
     }

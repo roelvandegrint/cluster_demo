@@ -37,7 +37,7 @@ module environment 'environment.bicep' = {
 module staffingsvc 'container-app.bicep' = {
   name: 'staffing-svc'
   params: {
-    containerAppName: 'cont-staffingsvc-rvdg'
+    containerAppName: 'cont-staffingsvc'
     location: location
     environmentId: environment.outputs.environmentId
     containerImage: staffingsvcImage
@@ -91,7 +91,7 @@ module frontend 'container-app.bicep' = {
     staffingsvc
   ]
   params: {
-    containerAppName: 'cont-frontend-rvdg'
+    containerAppName: 'cont-frontend'
     location: location
     environmentId: environment.outputs.environmentId
     containerImage: frontendImage
@@ -105,23 +105,6 @@ module frontend 'container-app.bicep' = {
       {
         name: 'ASPNETCORE_ENVIRONMENT'
         value: 'Development'
-      }
-    ]
-    daprComponents: [
-      {
-        name: 'events'
-        type: 'pubsub.redis'
-        version: 'v1'
-        metadata: [
-          {
-            name: 'redisHost'
-            value: '20.105.17.191:6379'
-          }
-          {
-            name: 'redisPassword'
-            value: 'p@ss$12E45'
-          }
-        ]
       }
     ]
   }
