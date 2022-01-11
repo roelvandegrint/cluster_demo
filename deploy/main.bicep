@@ -65,6 +65,17 @@ module staffingsvc 'container-app.bicep' = {
           }
         ]
       }
+      {
+        name: 'events'
+        type: 'pubsub.azure.servicebus'
+        version: 'v1'
+        metadata: [
+          {
+            name: 'connectionString'
+            value: 'Endpoint=sb://servicebus-rvdg-scale.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Bb/6VWD+j3DqdvlTpYFW7ZStiItRpaWTrZOirGpmVUI='
+          }
+        ]
+      }
     ]
   }
 }
