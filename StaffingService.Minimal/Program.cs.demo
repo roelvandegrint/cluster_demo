@@ -1,0 +1,14 @@
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<MessageProvider>();
+
+var app = builder.Build();
+
+app.MapGet("/hello", (MessageProvider message) => message.GetMessage());
+
+app.Run();
+
+public class MessageProvider
+{
+    public string GetMessage() => "hello world";
+}
