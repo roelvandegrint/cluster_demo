@@ -20,24 +20,24 @@ module environment 'environment.bicep' = {
   }
 }
 
-var eventsPubsubRedisDaprComponent = {
-  name: 'events'
-  type: 'pubsub.azure.servicebus'
-  version: 'v1'
-  metadata: [
-    {
-      name: 'connectionString'
-      value: 'Endpoint=sb://servicebus-rvdg-scale.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Bb/6VWD+j3DqdvlTpYFW7ZStiItRpaWTrZOirGpmVUI='
-    }
-  ]
-}
+// var eventsPubsubRedisDaprComponent = {
+//   name: 'events'
+//   type: 'pubsub.azure.servicebus'
+//   version: 'v1'
+//   metadata: [
+//     {
+//       name: 'connectionString'
+//       value: 'Endpoint=sb://servicebus-rvdg-scale.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Bb/6VWD+j3DqdvlTpYFW7ZStiItRpaWTrZOirGpmVUI='
+//     }
+//   ]
+// }
 
 // Container-2-Dotnet (container-app.bicep)
 // We deploy it first so we can call it from the node-app
 module staffingsvc 'container-app.bicep' = {
   name: 'staffing-svc'
   params: {
-    containerAppName: 'cont-staffingsvc-2'
+    containerAppName: 'cont-staffingsvc'
     location: location
     environmentId: environment.outputs.environmentId
     containerImage: staffingsvcImage
@@ -67,12 +67,16 @@ module staffingsvc 'container-app.bicep' = {
       }
       {
         name: 'events'
-        type: 'pubsub.azure.servicebus'
+        type: 'pubsub.redis'
         version: 'v1'
         metadata: [
           {
-            name: 'connectionString'
-            value: 'Endpoint=sb://servicebus-rvdg-scale.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Bb/6VWD+j3DqdvlTpYFW7ZStiItRpaWTrZOirGpmVUI='
+            name: 'redisHost'
+            value: '20.105.17.191:6379'
+          }
+          {
+            name: 'redisPassword'
+            value: 'p@ss$12E45'
           }
         ]
       }

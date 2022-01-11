@@ -14,7 +14,8 @@
         <div class="card-body">
             <h5 class="card-title">@Employee.FirstName @Employee.LastName</h5>
             <p class="card-text">Joined Capgemini on: @Employee.JoinedOn.ToString("dd-MM-yyyy")</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+            @* <a href="#" class="btn btn-primary" @onclick="OnClickCallback">Delete</a> *@
+            <button class="btn btn-primary" @onclick="@(async () => await OnClickCallback.InvokeAsync(Employee.Id))">Delete</button>
         </div>
     </div>
 }
@@ -24,6 +25,9 @@
     public Employee? Employee { get; set; }
 
     public int? Index;
+
+    [Parameter]
+    public EventCallback<string> OnClickCallback { get; set; }
 
     protected override void OnInitialized()
     {

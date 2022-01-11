@@ -18,4 +18,7 @@ public class StaffingService
 
     public async Task<Employee> CreateAsync(Employee employee) =>
         await dapr.InvokeMethodAsync<Employee, Employee>(HttpMethod.Post, "staffingsvc", "/employees", employee);
+
+    public async Task DeleteEmployeeAsync(string id) =>
+        await dapr.InvokeMethodAsync(HttpMethod.Delete, "staffingsvc", $"/employees/{id}");
 }

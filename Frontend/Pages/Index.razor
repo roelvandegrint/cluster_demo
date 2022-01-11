@@ -5,11 +5,13 @@
 @inject StaffingService staffingService
 @inject ILogger<Index> logger
 @inject NavigationManager NavigationManager
-@implements IDisposable
+@implements IAsyncDisposable
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello!</h1>
+
+<h1>Deleting @deleting</h1>
 
 @if (employees is null)
 {
@@ -31,7 +33,7 @@ else
             @foreach (var employee in employees.Take(3))
             {
                 <div class="col-md-4">
-                    <EmployeeCard Employee="@employee"></EmployeeCard>
+                    <EmployeeCard Employee="@employee" OnClickCallback="@DeleteEmployee"></EmployeeCard>
                 </div>
             }
         </div>
@@ -46,12 +48,22 @@ else
     <EmployeeCard Employee="@newEmployee"></EmployeeCard>
 }
 
-<p>Notifications area goes here</p>
 @code {
     private HubConnection? hubConnection;
     private IDisposable? listener;
     private List<Employee>? employees;
+    private bool deleting = false;
     private Employee? newEmployee;
+
+    private async Task DeleteEmployee(string id)
+    {
+        logger.LogInformation("Deleting employee");
+        await staffingService.DeleteEmployeeAsync(id);
+        var newEmployees = employees!.Where(e=>e.Id != id);
+        employees = newEmployees!.OrderByDescending(e => e.JoinedOn).ToList();
+        logger.LogInformation("Employee deleted");
+        StateHasChanged();
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -100,17 +112,19 @@ else
         }
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         logger.LogInformation("Dispose called");
-        @* if (listener is not null)
+        if (listener is not null)
         {
+            logger.LogInformation("Disposing of listener");
             listener.Dispose();
         }
 
         if (hubConnection is not null)
         {
+            logger.LogInformation("Disposing of hubconnection");
             await hubConnection.StopAsync();
-        } *@
+        }
     }
 }

@@ -35,7 +35,7 @@ public class EmployeesController : ControllerBase
     [HttpPost]
     public async Task<Employee> AddEmployeeAsync(Employee employee)
     {
-        employee.Id = Guid.NewGuid().ToString();
+        SetEmployeeId(employee);
         var employees = await _dapr.GetStateAsync<IEnumerable<Employee>>("staffing", "employees");
         if (employees is null)
         {
@@ -68,5 +68,21 @@ public class EmployeesController : ControllerBase
 
         await _dapr.PublishEventAsync<Employee>("events", "employee_deleted", employeeToGo);
         return Ok();
+    }
+
+    private void SetEmployeeId(Employee employee)
+    {
+        employee.Id = Guid.NewGuid().ToString();
+        switch (employee.FirstName)
+        {
+            case "Roel":
+                employee.Picture = "Roel.jpg";
+                return;
+            case "Donald":
+                employee.Picture = "Donald.png";
+                return;
+            default:
+                return;
+        }
     }
 }
