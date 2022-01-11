@@ -21,7 +21,7 @@ jobs:
       matrix:
         services: [ 
           { 'imageName': 'frontend', 'directory': '.', 'dockerFile': './Frontend/Dockerfile' },
-          { 'imageName': 'staffingsvc', 'directory': '.', 'dockerFile': './StaffingService.Minimal/Dockerfile' }
+          { 'imageName': 'staffingsvc', 'directory': '.', 'dockerFile': './StaffingService/Dockerfile' }
         ]
     outputs:
       containerImage-frontend: ${{ steps.image-tag.outputs.image-frontend }}

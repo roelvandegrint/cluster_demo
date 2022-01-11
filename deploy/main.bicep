@@ -86,10 +86,7 @@ module staffingsvc 'container-app.bicep' = {
 
 // Container-1-Node (container-app.bicep)
 module frontend 'container-app.bicep' = {
-  name: 'frontend'
-  dependsOn: [
-    staffingsvc
-  ]
+  name: 'frontend'  
   params: {
     containerAppName: 'cont-frontend'
     location: location
