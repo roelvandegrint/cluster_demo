@@ -37,7 +37,7 @@ var eventsPubsubRedisDaprComponent = {
 module staffingsvc 'container-app.bicep' = {
   name: 'staffing-svc'
   params: {
-    containerAppName: 'cont-staffingsvc-1'
+    containerAppName: 'cont-staffingsvc-2'
     location: location
     environmentId: environment.outputs.environmentId
     containerImage: staffingsvcImage
