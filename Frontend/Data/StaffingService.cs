@@ -14,11 +14,11 @@ public class StaffingService
     }
 
     public async Task<IEnumerable<Employee>> GetAllEmployeesAsync() =>
-        await dapr.InvokeMethodAsync<IEnumerable<Employee>>(HttpMethod.Get, "staffingsvc", "/employees");
+        await dapr.InvokeMethodAsync<IEnumerable<Employee>>(HttpMethod.Get, "staffingsvc-rvdg", "/employees");
 
     public async Task<Employee> CreateAsync(Employee employee) =>
-        await dapr.InvokeMethodAsync<Employee, Employee>(HttpMethod.Post, "staffingsvc", "/employees", employee);
+        await dapr.InvokeMethodAsync<Employee, Employee>(HttpMethod.Post, "staffingsvc-rvdg", "/employees", employee);
 
     public async Task DeleteEmployeeAsync(string id) =>
-        await dapr.InvokeMethodAsync(HttpMethod.Delete, "staffingsvc", $"/employees/{id}");
+        await dapr.InvokeMethodAsync(HttpMethod.Delete, "staffingsvc-rvdg", $"/employees/{id}");
 }

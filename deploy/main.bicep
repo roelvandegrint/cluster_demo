@@ -37,7 +37,7 @@ module environment 'environment.bicep' = {
 module staffingsvc 'container-app.bicep' = {
   name: 'staffing-svc'
   params: {
-    containerAppName: 'cont-staffingsvc'
+    containerAppName: 'cont-staffingsvc-rvdg'
     location: location
     environmentId: environment.outputs.environmentId
     containerImage: staffingsvcImage
@@ -91,7 +91,7 @@ module frontend 'container-app.bicep' = {
     staffingsvc
   ]
   params: {
-    containerAppName: 'cont-frontend'
+    containerAppName: 'cont-frontend-rvdg'
     location: location
     environmentId: environment.outputs.environmentId
     containerImage: frontendImage

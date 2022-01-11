@@ -78,10 +78,10 @@ jobs:
                 environmentName=contenv-demo \
                 frontendImage=${{ env.REGISTRY}}/${{ needs.build.outputs.containerImage-frontend }} \
                 frontendPort=80 \
-                frontendAppId=frontend \
+                frontendAppId=frontend-rvdg \
                 staffingsvcImage=${{ env.REGISTRY}}/${{ needs.build.outputs.containerImage-staffingsvc }} \
                 staffingsvcPort=80 \
-                staffingsvcAppId=staffingsvc \
+                staffingsvcAppId=staffingsvc-rvdg \
                 registry=${{ env.REGISTRY }} \
                 registryUsername=${{ secrets.REGISTRY_USERNAME }} \
                 registryPassword=${{ secrets.REGISTRY_PASSWORD }} \
