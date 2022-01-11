@@ -26,12 +26,12 @@ else
     {
         <h2>The most recent new-joiners are:</h2>
 
-        <div class="row">
+       <div class="row">
             @foreach (var employee in employees.Take(3))
             {
                 <div class="col-md-4">
-                    <EmployeeCard Employee="@employee"></EmployeeCard>
-                </div>
+                <EmployeeCard Employee="@employee"></EmployeeCard>
+            </div>
             }
         </div>
     }
@@ -52,12 +52,19 @@ else
     private List<Employee>? employees;
     private Employee? newEmployee;
 
-    protected override async Task OnInitializedAsync()
+   protected override async Task OnInitializedAsync()
     {
         await SetupSignalRAsync();
 
-        var employees = await staffingService.GetAllEmployeesAsync();
-        this.employees = employees.OrderByDescending(e => e.JoinedOn).ToList();
+        try
+        {
+            var employees = await staffingService.GetAllEmployeesAsync();
+            this.employees = employees.OrderByDescending(e => e.JoinedOn).ToList();
+        }
+        catch
+        {
+            employees = new List<Employee>();
+        }
     }
 
     private async Task SetupSignalRAsync()
@@ -66,8 +73,8 @@ else
         logger.LogInformation($"Calling hub on: {queryUri}");
 
         hubConnection = new HubConnectionBuilder()
-        @* .WithUrl(NavigationManager.ToAbsoluteUri("/notificationshub")) *@
-        .WithUrl("https://cont-frontend.jollybush-3d99f517.northeurope.azurecontainerapps.io/notificationshub")
+        .WithUrl(NavigationManager.ToAbsoluteUri("/notificationshub"))
+        @* .WithUrl("https://cont-frontend.jollybush-3d99f517.northeurope.azurecontainerapps.io/notificationshub") *@
         .Build();
 
         listener = hubConnection.On<Employee>("EmployeeJoined", employee =>
@@ -85,7 +92,7 @@ else
         {
             await hubConnection.StartAsync();
         }
-        catch(Exception ex) 
+        catch (Exception ex)
         {
             logger.LogError(ex, "Connecting to the SignalR Hub failed");
         }

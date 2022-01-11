@@ -9,4 +9,4 @@ spec:
   - name: redisHost
     value: 20.105.17.191:6379
   - name: redisPassword
-    value: ""
+    value: "p@ss$12E45"

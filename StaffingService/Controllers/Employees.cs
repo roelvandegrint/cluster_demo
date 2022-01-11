@@ -48,6 +48,7 @@ public class EmployeesController : ControllerBase
             await _dapr.SaveStateAsync("staffing", "employees", newState);
         }
 
+        _logger.LogInformation("New employee created, sending out event");
         await _dapr.PublishEventAsync<Employee>("events", "new_employees", employee);
         return employee;
     }

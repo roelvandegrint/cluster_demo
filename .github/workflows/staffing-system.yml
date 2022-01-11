@@ -75,7 +75,7 @@ jobs:
             az group create -g ${{ env.RESOURCE_GROUP }} -l northeurope
             az deployment group create -g ${{ env.RESOURCE_GROUP }} -f ./deploy/main.bicep \
              -p \
-                environmentName=contenv-ip-ap \
+                environmentName=contenv-demo \
                 frontendImage=${{ env.REGISTRY}}/${{ needs.build.outputs.containerImage-frontend }} \
                 frontendPort=80 \
                 frontendAppId=frontend \
