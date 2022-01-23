@@ -8,16 +8,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Frontend/Frontend.csproj", "Frontend/"]
-RUN dotnet restore "Frontend/Frontend.csproj"
+COPY ["SignalRChat/SignalRChat.csproj", "SignalRChat/"]
+RUN dotnet restore "SignalRChat/SignalRChat.csproj"
 COPY . .
-WORKDIR "/src/Frontend"
-RUN dotnet build "Frontend.csproj" -c Release -o /app/build
+WORKDIR "/src/SignalRChat"
+RUN dotnet build "SignalRChat.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Frontend.csproj" -c Release -o /app/publish
+RUN dotnet publish "SignalRChat.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Frontend.dll"]
+ENTRYPOINT ["dotnet", "SignalRChat.dll"]

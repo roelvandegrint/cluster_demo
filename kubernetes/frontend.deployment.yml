@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: roelvandegrint/cluster_demo_frontend:roel
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: frontend
+  name: frontend
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: frontend
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  defaultBackend:
+    service:
+      name: frontend
+      port:
+        number: 80

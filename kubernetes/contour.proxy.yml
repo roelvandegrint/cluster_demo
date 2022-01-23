@@ -1,0 +1,20 @@
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: root
+  namespace: default  
+spec:
+  virtualhost:
+    fqdn: roelvandegrint.local
+  routes:
+  - conditions:
+    - prefix: /    
+    services:
+      - name: signalrchat
+        port: 80
+  - conditions:
+    - prefix: /chatHub
+    enableWebsockets: true
+    services:
+      - name: signalrchat
+        port: 80

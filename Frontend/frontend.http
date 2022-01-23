@@ -1,0 +1,15 @@
+@protocol = http
+@host = roelvandegrint.local
+@port = 80
+
+POST {{protocol}}://{{host}}:{{port}}/messaging HTTP/1.1
+Content-Type: application/json
+
+{
+    "id": "some-id",
+    "firstName": "Roel",
+    "lastName": "van de Grint",
+    "joinedOn": "2021-01-23T00:00:00.000Z",
+    "picture": "Roel.jpg",
+    "processedBy": "manual HTTP call"
+}
