@@ -26,6 +26,8 @@ extensions:
 services:
   - name: frontend
     project: Frontend/Frontend.csproj
+  # - name: staffingsvc
+  #   project: StaffingService/StaffingService.csproj
   - name: staffingsvc
     project: StaffingService/StaffingService.csproj
 

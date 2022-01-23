@@ -1,9 +1,18 @@
-@port = 62735
+@host = cont-staffingsvc.jollybush-3d99f517.northeurope.azurecontainerapps.io/
+@port = 61843
 
-GET http://localhost:{{port}}/v1.0/invoke/staffingsvc/method/employees HTTP/1.1
+GET https://localhost:{{port}}/v1.0/invoke/staffingsvc/method/employees HTTP/1.1
 
 ###
 GET http://localhost:{{port}}/v1.0/invoke/staffingsvc/method/employees/3054e863-1de0-438d-b103-7086c6d7c109 HTTP/1.1
+
+###
+POST http://localhost:{{port}}/v1.0-alpha1/state/staffing/query HTTP/1.1
+Content-Type: application/json
+
+{
+    "query": {    }
+}
 
 ###
 DELETE http://localhost:{{port}}/v1.0/invoke/staffingsvc/method/employees/a8241c85-32e6-4fbe-ad32-2a228d3a6eda HTTP/1.1 

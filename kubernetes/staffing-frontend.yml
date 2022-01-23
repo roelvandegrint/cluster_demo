@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: staffing-frontend-deployment
+  labels:
+    app: staffing-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: staffing-frontend
+  template:
+    metadata:
+      labels:
+        app: staffing-frontend
+      # annotations:
+        # dapr.io/enabled: 'true'
+        # dapr.io/app-id: staffing-frontend
+        # dapr.io/app-port: '80'
+        # dapr.io/config: 'tracing'
+    spec:
+      containers:
+      - name: staffing-frontend
+        image: roelvandegrint/cluster_demo_frontend:0.1.0
+        ports:
+        - containerPort: 80
+        env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: Development
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   labels:
+#     app: staffing-frontend
+#   name: staffing-frontend
+# spec:
+#   ports:
+#   - port: 80
+#     protocol: TCP
+#     targetPort: 80
+#   selector:
+#     app: staffing-frontend
+#   sessionAffinity: None
+#   type: ClusterIP
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: staffing-frontend
+#   labels:
+#     app: staffing-frontend
+# spec:
+#   defaultBackend:
+#     service:
+#       name: staffing-frontend
+#       port:
+#         number: 80

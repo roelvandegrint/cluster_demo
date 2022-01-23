@@ -3,12 +3,15 @@ kind: Component
 metadata:
   name: events
 spec:
-  type: pubsub.azure.servicebus
+  # type: pubsub.azure.servicebus
+  type: pubsub.redis
   version: v1
   metadata:
-  - name: connectionString
-    value: Endpoint=sb://servicebus-rvdg-scale.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Bb/6VWD+j3DqdvlTpYFW7ZStiItRpaWTrZOirGpmVUI=
   # - name: redisHost
-  #   value: localhost:6379
+  #   value: 20.105.17.191:6379
   # - name: redisPassword
-  #   value: ""
+  #   value: "p@ss$12E45"
+  - name: redisHost
+    value: localhost:6379
+  - name: redisPassword
+    value: ""

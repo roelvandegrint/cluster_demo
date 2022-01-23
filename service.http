@@ -1,0 +1,54 @@
+@host = cont-staffingsvc-1.jollyground-b70a12b8.northeurope.azurecontainerapps.io
+@port = 443
+
+GET https://{{host}}:{{port}}/employees HTTP/1.1
+
+###
+GET https://{{host}}:{{port}}/employees/222395b2-3d21-48e4-89b1-e45437819e5a HTTP/1.1
+
+###
+DELETE https://{{host}}:{{port}}/employees/222395b2-3d21-48e4-89b1-e45437819e5a HTTP/1.1 
+
+###
+POST https://{{host}}:{{port}}/employees HTTP/1.1
+Content-Type: application/json
+
+{
+    "firstName": "Roel",
+    "lastName": "van de Grint",
+    "joinedOn": "2017-09-01",
+    "picture": "IMG_0609.JPG"
+}
+
+###
+POST http://localhost:{{port}}/v1.0/invoke/staffingsvc/method/employees HTTP/1.1
+Content-Type: application/json
+
+{
+    "firstName": "Donald",
+    "lastName": "Hessing",
+    "joinedOn": "1928-03-01T00:00:00Z",
+    "picture": "Donald.png"
+}
+
+###
+POST http://localhost:{{port}}/v1.0/invoke/staffingsvc/method/employees HTTP/1.1
+Content-Type: application/json
+
+{
+    "firstName": "Gerben",
+    "lastName": "de Vries",
+    "joinedOn": "2021-06-06T00:00:00Z"
+}
+
+###
+POST https://cont-frontend.jollybush-3d99f517.northeurope.azurecontainerapps.io/messaging HTTP/1.1
+Content-Type: application/json
+
+{
+    "id": "some-id",
+    "firstName": "Roel",
+    "lastName": "van de Grint",
+    "joinedOn": "2021-06-06T00:00:00Z",
+    "picture": "IMG_0609.JPG"
+}

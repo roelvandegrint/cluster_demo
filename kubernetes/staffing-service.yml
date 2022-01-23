@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: staffingsvc-deployment
+  labels:
+    app: staffingsvc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: staffingsvc
+  template:
+    metadata:
+      labels:
+        app: staffingsvc
+      annotations:
+        dapr.io/enabled: 'true'
+        dapr.io/app-id: staffingsvc
+        dapr.io/app-port: '80'
+        dapr.io/config: 'tracing'
+    spec:
+      containers:
+      - name: staffingsvc
+        image: roelvandegrint/staffing-svc:0.1.0
+        ports:
+        - containerPort: 80
+        env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: Development

@@ -1,0 +1,47 @@
+@protocol = http
+@host = localhost
+@port = 80
+
+POST {{protocol}}://{{host}}:{{port}}/messaging HTTP/1.1
+Content-Type: application/json
+
+{
+    "id": "random1",
+    "firstName": "Donald",
+    "lastName": "Hessing",
+    "joinedOn": "2017-09-01T00:00:00Z",
+    "picture": "Donald.png"
+}
+
+###
+POST {{protocol}}://localhost:{{port}}/v1.0/invoke/staffingsvc/method/employees HTTP/1.1
+Content-Type: application/json
+
+{
+    "firstName": "Donald",
+    "lastName": "Hessing",
+    "joinedOn": "1928-03-01T00:00:00Z",
+    "picture": "Donald.png"
+}
+
+###
+POST {{protocol}}://localhost:{{port}}/v1.0/invoke/staffingsvc/method/employees HTTP/1.1
+Content-Type: application/json
+
+{
+    "firstName": "Gerben",
+    "lastName": "de Vries",
+    "joinedOn": "2021-06-06T00:00:00Z"
+}
+
+###
+POST {{protocol}}://{{host}}:{{port}}/messaging HTTP/1.1
+Content-Type: application/json
+
+{
+    "id": "some-id",
+    "firstName": "Roel",
+    "lastName": "van de Grint",
+    "joinedOn": "2021-06-06T00:00:00Z",
+    "picture": "Roel.jpg"
+}
