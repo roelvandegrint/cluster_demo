@@ -8,13 +8,8 @@ spec:
     fqdn: roelvandegrint.local
   routes:
   - conditions:
-    - prefix: /    
-    services:
-      - name: signalrchat
-        port: 80
-  - conditions:
-    - prefix: /chatHub
+    - prefix: /
     enableWebsockets: true
     services:
-      - name: signalrchat
-        port: 80
+      - name: frontend
+        port: 80  

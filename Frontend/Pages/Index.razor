@@ -68,8 +68,8 @@ else
 
         try
         {
-            @* var employees = await staffingService.GetAllEmployeesAsync();
-            this.employees = employees.OrderByDescending(e => e.JoinedOn).ToList(); *@
+            var employees = await staffingService.GetAllEmployeesAsync();
+            this.employees = employees.OrderByDescending(e => e.JoinedOn).ToList();
         }
         catch
         {
@@ -80,12 +80,8 @@ else
 
     private async Task SetupSignalRAsync()
     {
-        var queryUri = NavigationManager.ToAbsoluteUri("/notificationshub");
-        logger.LogInformation($"Calling hub on: {queryUri}");
-
         hubConnection = new HubConnectionBuilder()
-        @* .WithUrl(NavigationManager.ToAbsoluteUri("/notificationshub")) *@
-        .WithUrl("http://localhost:80/notificationshub")
+        .WithUrl(NavigationManager.ToAbsoluteUri("/notificationshub"))
         .Build();
 
         listener = hubConnection.On<Employee>("EmployeeJoined", employee =>

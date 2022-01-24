@@ -73,7 +73,7 @@ public class EmployeesController : ControllerBase
     private void SetEmployeeId(Employee employee)
     {
         employee.Id = Guid.NewGuid().ToString();
-        employee.ProcessedBy = "Regular API";
+        employee.ProcessedBy = Environment.GetEnvironmentVariable("RVDG_SERVICE_NAME");
         switch (employee.FirstName)
         {
             case "Roel":
