@@ -1,5 +1,5 @@
 using Dapr.Client;
-using Staffing.Shared;
+using Frontend.Models;
 
 namespace Frontend.Data;
 

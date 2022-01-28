@@ -1,9 +1,8 @@
 using System.Text.Json;
 using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
-using Staffing.Shared;
 
-namespace StaffingService.Controllers;
+namespace StaffingService.Employees;
 
 [ApiController]
 [Route("[controller]")]
@@ -21,16 +20,21 @@ public class EmployeesController : ControllerBase
     [HttpGet]
     public async Task<IEnumerable<Employee?>> GetAsync()
     {
-        var employeeKeys = await _dapr.GetStateAsync<IReadOnlyList<string>>("staffing", "employeeKeys");
-        if (employeeKeys is null || employeeKeys.Count == 0) return Array.Empty<Employee>();
-        var result = await _dapr.GetBulkStateAsync("staffing", employeeKeys, null);
+        var employeeKeys = await _dapr.GetStateAsync<IEnumerable<string>>("staffing", "employeeKeys");
+        if (employeeKeys is null || !employeeKeys.Any())
+        {
+            return Array.Empty<Employee>();
+        }
+
+        var prefixedKeys = employeeKeys.Select(e => $"employee_{e}").ToList();
+        var result = await _dapr.GetBulkStateAsync("staffing", prefixedKeys, null);
         return result.Select(item => JsonSerializer.Deserialize<Employee>(item.Value));
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Employee>> GetByIdAsync(string id)
     {
-        var employee = await _dapr.GetStateAsync<Employee>("staffing", id);
+        var employee = await _dapr.GetStateAsync<Employee>("staffing", $"employee_{id}");
         if (employee is null) return NotFound();
         return employee;
     }
@@ -38,24 +42,43 @@ public class EmployeesController : ControllerBase
     [HttpPost]
     public async Task<Employee> AddEmployeeAsync(Employee employee)
     {
-        var employeeKeys = await _dapr.GetStateAsync<IEnumerable<string>>("staffing", "employeeKeys");
-        if (employeeKeys is null)
+        var newEmployee = employee with
         {
-            employeeKeys = new List<string> { employee.Id! };
-        }
+            Id = Guid.NewGuid().ToString(),
+            ProcessedBy = Environment.GetEnvironmentVariable("RVDG_ENVIRONMENT_NAME"),
+            Picture = DeterminePicture(employee.FirstName!),
+            JoinedOn = DateTime.Now.Date
+        };
+
+        var employeeKeys = await _dapr.GetStateAsync<List<string>>("staffing", "employeeKeys");
+        if (employeeKeys is null) employeeKeys = new List<string>();
+        employeeKeys.Add(newEmployee.Id);
 
         // TODO: Handle ETAG here
         var transactions = new List<StateTransactionRequest>
         {
             new StateTransactionRequest("employeeKeys", JsonSerializer.SerializeToUtf8Bytes(employeeKeys), StateOperationType.Upsert),
-            new StateTransactionRequest($"employee_{employee.Id}", JsonSerializer.SerializeToUtf8Bytes(employee), StateOperationType.Upsert)
+            new StateTransactionRequest($"employee_{newEmployee.Id}", JsonSerializer.SerializeToUtf8Bytes(newEmployee), StateOperationType.Upsert)
         };
 
         await _dapr.ExecuteStateTransactionAsync("staffing", transactions);
 
         _logger.LogInformation("New employee created, sending out event");
-        await _dapr.PublishEventAsync<Employee>("events", "new_employees", employee);
+        await _dapr.PublishEventAsync<Employee>("events", "new_employees", newEmployee);
         return employee;
+    }
+
+    private string? DeterminePicture(string name)
+    {
+        switch (name.ToUpperInvariant())
+        {
+            case "ROEL":
+                return "Roel.jpg";
+            case "DONALD":
+                return "Donald.png";
+            default:
+                return null;
+        }
     }
 
     [HttpDelete("{id}")]
@@ -67,7 +90,7 @@ public class EmployeesController : ControllerBase
         // TODO: Handle ETAG here
         var transactions = new List<StateTransactionRequest> {
             new StateTransactionRequest("employeeKeys", JsonSerializer.SerializeToUtf8Bytes(employeeKeys), StateOperationType.Upsert),
-            new StateTransactionRequest(id, null, StateOperationType.Delete)
+            new StateTransactionRequest($"employee_{id}", null, StateOperationType.Delete)
         };
 
         await _dapr.ExecuteStateTransactionAsync("staffing", transactions);

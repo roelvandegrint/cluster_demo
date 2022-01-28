@@ -28,6 +28,9 @@ services:
     project: Frontend/Frontend.csproj
   - name: staffingsvc
     project: StaffingService/StaffingService.csproj
+    env:
+      - name: "RVDG_ENVIRONMENT_NAME"
+        value: "Staffing Service"
 
 # This may conflict with the redis instance that dapr manages.
 #

@@ -1,6 +1,6 @@
 @page "/employees/new"
 @using Frontend.Data
-@using Staffing.Shared
+@using Frontend.Models
 @inject ILogger<CreateEmployee> Logger
 @inject StaffingService staffingService
 @inject NavigationManager navigationManager
@@ -27,10 +27,6 @@
     {
         Logger.LogInformation("HandleValidSubmit called");
 
-        // Process the valid form
-        newEmployee.JoinedOn = new DateTime(rnd.Next(2015, 2022), rnd.Next(1, 13), rnd.Next(1, 29));
-
         await staffingService.CreateAsync(newEmployee);
-        @* navigationManager.NavigateTo("/"); *@
     }
 }
