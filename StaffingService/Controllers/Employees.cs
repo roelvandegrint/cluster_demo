@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
 using Staffing.Shared;
@@ -18,35 +19,39 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Employee>> GetAsync()
+    public async Task<IEnumerable<Employee?>> GetAsync()
     {
-        var employees = await _dapr.GetStateAsync<IEnumerable<Employee>>("staffing", "employees");
-        if (employees is null) return new Employee[] { };
-        return employees;
+        var employeeKeys = await _dapr.GetStateAsync<IReadOnlyList<string>>("staffing", "employeeKeys");
+        if (employeeKeys is null || employeeKeys.Count == 0) return Array.Empty<Employee>();
+        var result = await _dapr.GetBulkStateAsync("staffing", employeeKeys, null);
+        return result.Select(item => JsonSerializer.Deserialize<Employee>(item.Value));
     }
 
     [HttpGet("{id}")]
-    public async Task<Employee?> GetByIdAsync(string id)
+    public async Task<ActionResult<Employee>> GetByIdAsync(string id)
     {
-        var employees = await _dapr.GetStateAsync<IEnumerable<Employee>>("staffing", "employees");
-        return employees?.FirstOrDefault(e => e.Id == id);
+        var employee = await _dapr.GetStateAsync<Employee>("staffing", id);
+        if (employee is null) return NotFound();
+        return employee;
     }
 
     [HttpPost]
     public async Task<Employee> AddEmployeeAsync(Employee employee)
     {
-        SetEmployeeId(employee);
-        var employees = await _dapr.GetStateAsync<IEnumerable<Employee>>("staffing", "employees");
-        if (employees is null)
+        var employeeKeys = await _dapr.GetStateAsync<IEnumerable<string>>("staffing", "employeeKeys");
+        if (employeeKeys is null)
         {
-            await _dapr.SaveStateAsync("staffing", "employees", new Employee[] { employee });
+            employeeKeys = new List<string> { employee.Id! };
         }
-        else
+
+        // TODO: Handle ETAG here
+        var transactions = new List<StateTransactionRequest>
         {
-            var newState = employees.ToList();
-            newState.Add(employee);
-            await _dapr.SaveStateAsync("staffing", "employees", newState);
-        }
+            new StateTransactionRequest("employeeKeys", JsonSerializer.SerializeToUtf8Bytes(employeeKeys), StateOperationType.Upsert),
+            new StateTransactionRequest($"employee_{employee.Id}", JsonSerializer.SerializeToUtf8Bytes(employee), StateOperationType.Upsert)
+        };
+
+        await _dapr.ExecuteStateTransactionAsync("staffing", transactions);
 
         _logger.LogInformation("New employee created, sending out event");
         await _dapr.PublishEventAsync<Employee>("events", "new_employees", employee);
@@ -56,34 +61,17 @@ public class EmployeesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteEmployeeASync(string id)
     {
-        var employees = await _dapr.GetStateAsync<IEnumerable<Employee>>("staffing", "employees");
+        var employeeKeys = await _dapr.GetStateAsync<IEnumerable<string>>("staffing", "employeeKeys");
+        employeeKeys = employeeKeys.Where(e => e != id);
 
-        if (employees is null) return Ok();
+        // TODO: Handle ETAG here
+        var transactions = new List<StateTransactionRequest> {
+            new StateTransactionRequest("employeeKeys", JsonSerializer.SerializeToUtf8Bytes(employeeKeys), StateOperationType.Upsert),
+            new StateTransactionRequest(id, null, StateOperationType.Delete)
+        };
 
-        var employeeToGo = employees.FirstOrDefault(e => e.Id == id);
-        if (employeeToGo is null) return Ok();
-
-        var newState = employees.Where(e => e.Id != id);
-        await _dapr.SaveStateAsync("staffing", "employees", newState);
-
-        await _dapr.PublishEventAsync<Employee>("events", "employee_deleted", employeeToGo);
+        await _dapr.ExecuteStateTransactionAsync("staffing", transactions);
+        await _dapr.PublishEventAsync<string>("events", "employee_deleted", id);
         return Ok();
-    }
-
-    private void SetEmployeeId(Employee employee)
-    {
-        employee.Id = Guid.NewGuid().ToString();
-        employee.ProcessedBy = Environment.GetEnvironmentVariable("RVDG_SERVICE_NAME");
-        switch (employee.FirstName)
-        {
-            case "Roel":
-                employee.Picture = "Roel.jpg";
-                return;
-            case "Donald":
-                employee.Picture = "Donald.png";
-                return;
-            default:
-                return;
-        }
     }
 }

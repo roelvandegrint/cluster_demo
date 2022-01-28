@@ -20,7 +20,10 @@ spec:
     spec:
       containers:
       - name: staffingsvc
-        image: roelvandegrint/cluster_demo_staffingsvc:0.1.0
+        image: roelvandegrint/cluster_demo_staffingsvc:0.2.0
+        envFrom:
+          - configMapRef:
+              name: staffingsvc
 ---
 apiVersion: v1
 kind: Service

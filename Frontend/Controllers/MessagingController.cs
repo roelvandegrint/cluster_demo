@@ -10,7 +10,6 @@ namespace Frontend.Controllers;
 [Route("[controller]")]
 public class MessagingController : ControllerBase
 {
-
     private readonly ILogger<MessagingController> _logger;
     private readonly IHubContext<NotificationsHub> _hubContext;
 

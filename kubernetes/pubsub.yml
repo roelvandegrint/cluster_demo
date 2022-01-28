@@ -10,5 +10,5 @@ spec:
     value: redis-master.default.svc.cluster.local:6379
   - name: redisPassword
     secretKeyRef:
-      key: redis-password
       name: redis
+      key: redis-password
