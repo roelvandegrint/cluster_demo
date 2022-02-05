@@ -66,7 +66,7 @@ module staffingsvc 'container-app.bicep' = {
         ]
       }
       {
-        name: 'events_backend'
+        name: 'events-backend'
         type: 'pubsub.redis'
         version: 'v1'
         metadata: [
@@ -106,7 +106,7 @@ module frontend 'container-app.bicep' = {
     ]
     daprComponents: [
       {
-        name: 'events_frontend'
+        name: 'events-frontend'
         type: 'pubsub.redis'
         version: 'v1'
         metadata: [
