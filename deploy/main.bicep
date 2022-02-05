@@ -49,6 +49,23 @@ module staffingsvc 'container-app.bicep' = {
     isExternalIngress: true
     containerSecrets: []
     environmentVars: []
+    daprComponents: [
+      {
+        name: 'staffing'
+        type: 'state.redis'
+        version: 'v1'
+        metadata: [
+          {
+            name: 'redisHost'
+            value: '20.105.17.191:6379'
+          }
+          {
+            name: 'redisPassword'
+            value: 'p@ss$12E45'
+          }
+        ]
+      }
+    ]
   }
 }
 
@@ -70,6 +87,23 @@ module frontend 'container-app.bicep' = {
       {
         name: 'ASPNETCORE_ENVIRONMENT'
         value: 'Development'
+      }
+    ]
+    daprComponents: [
+      {
+        name: 'events-frontend'
+        type: 'pubsub.redis'
+        version: 'v1'
+        metadata: [
+          {
+            name: 'redisHost'
+            value: '20.105.17.191:6379'
+          }
+          {
+            name: 'redisPassword'
+            value: 'p@ss$12E45'
+          }
+        ]
       }
     ]
   }
