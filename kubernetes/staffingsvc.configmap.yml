@@ -4,4 +4,4 @@ metadata:
   name: staffingsvc
 data:
   # property-like keys; each key maps to a simple value
-  RVDG_SERVICE_NAME: Some cool thing from a FULL config map
+  RVDG_ENVIRONMENT_NAME: K8S Staffing Service

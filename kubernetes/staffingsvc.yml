@@ -15,15 +15,16 @@ spec:
         app: staffingsvc
       annotations:
         dapr.io/app-id: staffingsvc
-        dapr.io/app-port: '80'
-        dapr.io/enabled: 'true'
+        dapr.io/app-port: "80"
+        dapr.io/enabled: "true"
+        dapr.io/config: "appconfig"
     spec:
       containers:
-      - name: staffingsvc
-        image: roelvandegrint/cluster_demo_staffingsvc:0.2.0
-        envFrom:
-          - configMapRef:
-              name: staffingsvc
+        - name: staffingsvc
+          image: roelvandegrint.azurecr.io/cluster_demo_staffingsvc:0.1.0
+          envFrom:
+            - configMapRef:
+                name: staffingsvc
 ---
 apiVersion: v1
 kind: Service
@@ -33,9 +34,9 @@ metadata:
   name: staffingsvc
 spec:
   ports:
-  - port: 80
-    protocol: TCP
-    targetPort: 80
+    - port: 80
+      protocol: TCP
+      targetPort: 80
   selector:
     app: staffingsvc
   sessionAffinity: None
