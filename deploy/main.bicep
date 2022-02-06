@@ -71,7 +71,7 @@ module staffingsvc 'container-app.bicep' = {
 
 // Container-1-Node (container-app.bicep)
 module frontend 'container-app.bicep' = {
-  name: 'frontend'  
+  name: 'frontend'
   params: {
     containerAppName: 'cont-frontend'
     location: location
@@ -89,22 +89,6 @@ module frontend 'container-app.bicep' = {
         value: 'Development'
       }
     ]
-    daprComponents: [
-      {
-        name: 'events-frontend'
-        type: 'pubsub.redis'
-        version: 'v1'
-        metadata: [
-          {
-            name: 'redisHost'
-            value: '20.105.17.191:6379'
-          }
-          {
-            name: 'redisPassword'
-            value: 'p@ss$12E45'
-          }
-        ]
-      }
-    ]
+    daprComponents: []
   }
 }
