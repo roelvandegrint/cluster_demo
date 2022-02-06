@@ -35,7 +35,7 @@ resource environment 'Microsoft.Web/kubeEnvironments@2021-02-01' = {
 
 resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-11-01' = {
   name: serviceBusNamespaceName
-  location: 'West Europe'
+  location: 'westeurope'
   
   resource newEmployeesQueue 'queues@2021-11-01' = {
     name: 'new_employees'
