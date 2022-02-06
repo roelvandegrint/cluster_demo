@@ -57,11 +57,11 @@ module staffingsvc 'container-app.bicep' = {
         metadata: [
           {
             name: 'redisHost'
-            value: '20.105.17.191:6379'
+            value: '20.86.196.182:6379'
           }
           {
             name: 'redisPassword'
-            value: 'p@ss$12E45'
+            value: ''
           }
         ]
       }
