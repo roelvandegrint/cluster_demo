@@ -49,23 +49,7 @@ module staffingsvc 'container-app.bicep' = {
     isExternalIngress: true
     containerSecrets: []
     environmentVars: []
-    daprComponents: [
-      {
-        name: 'staffing'
-        type: 'state.redis'
-        version: 'v1'
-        metadata: [
-          {
-            name: 'redisHost'
-            value: '20.86.196.182:6379'
-          }
-          {
-            name: 'redisPassword'
-            value: ''
-          }
-        ]
-      }
-    ]
+    daprComponents: []
   }
 }
 
