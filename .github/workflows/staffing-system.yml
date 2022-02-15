@@ -15,45 +15,45 @@ env:
   RESOURCE_GROUP: rg-cluster-demo
 
 jobs:
-  # build:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       services: [ 
-  #         { 'imageName': 'frontend', 'directory': '.', 'dockerFile': './Frontend/Dockerfile' },
-  #         { 'imageName': 'staffingsvc', 'directory': '.', 'dockerFile': './StaffingService/Dockerfile' }
-  #       ]
-  #   outputs:
-  #     containerImage-frontend: ${{ steps.image-tag.outputs.image-frontend }}
-  #     containerImage-staffingsvc: ${{ steps.image-tag.outputs.image-staffingsvc }}      
-  #   steps:
-  #     - name: Checkout to the branch
-  #       uses: actions/checkout@v2        
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        services: [ 
+          { 'imageName': 'frontend', 'directory': '.', 'dockerFile': './Frontend/Dockerfile' },
+          { 'imageName': 'staffingsvc', 'directory': '.', 'dockerFile': './StaffingService/Dockerfile' }
+        ]
+    outputs:
+      containerImage-frontend: ${{ steps.image-tag.outputs.image-frontend }}
+      containerImage-staffingsvc: ${{ steps.image-tag.outputs.image-staffingsvc }}      
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2        
 
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-  #     - name: Log in to container registry
-  #       uses: docker/login-action@v1
-  #       with:
-  #         registry: ${{ env.REGISTRY }}
-  #         username: ${{ secrets.REGISTRY_USERNAME }}
-  #         password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Log in to container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
 
-  #     #Build and push Docker image with Buildx (don't push on PR)
-  #     #https://github.com/docker/build-push-action
-  #     - name: Build and push Docker image
-  #       uses: docker/build-push-action@v2
-  #       with:
-  #         context: ${{ matrix.services.directory }}
-  #         tags: ${{ env.REGISTRY }}/${{ matrix.services.imageName }}:${{ github.sha }}
-  #         push: true
-  #         file: ${{ matrix.services.dockerFile }}
+      #Build and push Docker image with Buildx (don't push on PR)
+      #https://github.com/docker/build-push-action
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ${{ matrix.services.directory }}
+          tags: ${{ env.REGISTRY }}/${{ matrix.services.imageName }}:${{ github.sha }}
+          push: true
+          file: ${{ matrix.services.dockerFile }}
 
 
-  #     - name: Output image tag
-  #       id: image-tag
-  #       run: echo "::set-output name=image-${{ matrix.services.imageName }}::${{ matrix.services.imageName }}:${{ github.sha }}"
+      - name: Output image tag
+        id: image-tag
+        run: echo "::set-output name=image-${{ matrix.services.imageName }}::${{ matrix.services.imageName }}:${{ github.sha }}"
 
   deploy:
     runs-on: ubuntu-latest
