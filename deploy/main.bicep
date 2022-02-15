@@ -73,6 +73,22 @@ module frontend 'container-app.bicep' = {
         value: 'Development'
       }
     ]
-    daprComponents: []
+    daprComponents: [
+      {
+        name: 'events'
+        type: 'pubsub.redis'
+        version: 'v1'
+        metadata: [
+          {
+            name: 'redisHost'
+            value: '20.76.48.108:6379'
+          }
+          {
+            name: 'redisPassword'
+            value: 'mypassword'
+          }
+        ]
+      }
+    ]
   }
 }
