@@ -76,10 +76,10 @@ jobs:
             az deployment group create -g ${{ env.RESOURCE_GROUP }} -f ./deploy/main.bicep \
              -p \
                 environmentName=contenv-demo \
-                frontendImage=${{ env.REGISTRY}}/frontend:c9696bcc20f130d7a509a10a2667f563c708f5aa \
+                frontendImage=${{ env.REGISTRY}}/${{ needs.build.outputs.containerImage-frontend }} \
                 frontendPort=80 \
                 frontendAppId=frontend \
-                staffingsvcImage=${{ env.REGISTRY}}/staffingsvc:c9696bcc20f130d7a509a10a2667f563c708f5aa \
+                staffingsvcImage=${{ env.REGISTRY}}/${{ needs.build.outputs.containerImage-staffingsvc }} \
                 staffingsvcPort=80 \
                 staffingsvcAppId=staffingsvc \
                 registry=${{ env.REGISTRY }} \
