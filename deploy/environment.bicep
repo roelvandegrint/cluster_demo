@@ -33,13 +33,4 @@ resource environment 'Microsoft.Web/kubeEnvironments@2021-02-01' = {
   }
 }
 
-resource serviceBus 'Microsoft.ServiceBus/namespaces@2017-04-01' = {
-  name: serviceBusNamespaceName
-  location: 'westeurope'
-
-  resource newEmployeesQueue 'queues@2017-04-01' = {
-    name: 'new_employees'
-  }
-}
-
 output environmentId string = environment.id

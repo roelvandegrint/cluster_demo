@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "northeurope"
+        },
+        "environmentName": {
+            "value": "contenv-demo"
+        },
+        "frontendImage": {
+            "value": "roelvandegrint.azurecr.io/frontend:b0f679aeed0883b5fd6750debd8406fdab81b5bf"
+        },        
+        "frontendPort": {
+            "value": 80
+        },
+        "frontendAppId": {
+            "value": "frontend"
+        },
+        "staffingsvcImage": {
+            "value": "roelvandegrint.azurecr.io/staffingsvc:b0f679aeed0883b5fd6750debd8406fdab81b5bf"
+        },
+        "staffingsvcPort": {
+            "value": 80
+        },
+        "staffingsvcAppId": {
+            "value": "staffingsvc"
+        },
+        "registry": {
+            "value": "roelvandegrint.azurecr.io"
+        },
+        "registryUsername": {
+            "value": "roelvandegrint"
+        },
+        "registryPassword": {
+            "value": "pKjoHLWZbn6A/XQstkq7FBMbVmHwCxX5"
+        }
+    }
+}

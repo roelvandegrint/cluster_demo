@@ -2,18 +2,6 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/StaffingService/StaffingService.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
             "label": "build Frontend",
             "command": "dotnet",
             "type": "process",
@@ -38,30 +26,6 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "${workspaceFolder}/StaffingService/StaffingService.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "watch",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "watch",
-                "run",
-                "--project",
-                "${workspaceFolder}/StaffingService/StaffingService.csproj"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
             "label": "bridge-to-kubernetes.resource",
             "type": "bridge-to-kubernetes.resource",
             "resource": "staffingsvc",
@@ -71,7 +35,7 @@
             ],
             "targetCluster": "aks-demo",
             "targetNamespace": "default",
-            "useKubernetesServiceEnvironmentVariables": true
+            "useKubernetesServiceEnvironmentVariables": false
         },
         {
             "label": "bridge-to-kubernetes.compound",
