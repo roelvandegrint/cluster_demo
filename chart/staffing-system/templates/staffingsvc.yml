@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: staffingsvc
+  labels:
+    app: staffingsvc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: staffingsvc
+  template:
+    metadata:
+      labels:
+        app: staffingsvc
+      annotations:
+        dapr.io/app-id: staffingsvc
+        dapr.io/app-port: "80"
+        dapr.io/enabled: "true"
+    spec:
+      containers:
+        - name: staffingsvc
+          image: roelvandegrint.azurecr.io/cluster_demo_staffingsvc:0.1.0
+          envFrom:
+            - configMapRef:
+                name: staffingsvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: staffingsvc
+  name: staffingsvc
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: staffingsvc
+  sessionAffinity: None
+  type: ClusterIP

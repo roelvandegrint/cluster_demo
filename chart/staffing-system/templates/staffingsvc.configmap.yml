@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: staffingsvc
+data:
+  # property-like keys; each key maps to a simple value
+  RVDG_ENVIRONMENT_NAME: K8S Staffing Service
