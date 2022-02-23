@@ -20,7 +20,8 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: roelvandegrint.azurecr.io/cluster_demo_frontend:0.1.0
+          image: {{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
 ---
 apiVersion: v1
 kind: Service
@@ -30,9 +31,9 @@ metadata:
   name: frontend
 spec:
   ports:
-    - port: 80
+    - port: {{ .Values.frontend.port }}
       protocol: TCP
-      targetPort: 80
+      targetPort: {{ .Values.frontend.port }}
   selector:
     app: frontend
   type: ClusterIP

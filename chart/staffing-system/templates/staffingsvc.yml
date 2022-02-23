@@ -20,7 +20,8 @@ spec:
     spec:
       containers:
         - name: staffingsvc
-          image: roelvandegrint.azurecr.io/cluster_demo_staffingsvc:0.1.0
+          image: {{ .Values.staffingsvc.image.repository }}:{{ .Values.staffingsvc.image.tag }}
+          imagePullPolicy: {{ .Values.staffingsvc.image.pullPolicy }}
           envFrom:
             - configMapRef:
                 name: staffingsvc
@@ -33,9 +34,9 @@ metadata:
   name: staffingsvc
 spec:
   ports:
-    - port: 80
+    - port: {{ .Values.staffingsvc.port }}
       protocol: TCP
-      targetPort: 80
+      targetPort: {{ .Values.staffingsvc.port }}
   selector:
     app: staffingsvc
   sessionAffinity: None
